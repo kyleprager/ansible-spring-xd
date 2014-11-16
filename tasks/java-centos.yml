@@ -1,0 +1,32 @@
+---
+# Install Java CentOS
+- name: install wget
+  yum: name=wget state=present
+
+- name: Download Java CentOS
+  command: '/usr/bin/wget --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u25-b17/{{ java_tarfile_name }}"'
+  args:
+    chdir: /opt
+    creates: /opt/{{ java_tarfile_name }}
+  tags:
+    - java
+
+- name: Untar Java CentOS
+  command: tar xzf {{ java_tarfile_name }}
+  args:
+    chdir: /opt/
+    creates: /opt/{{ java_folder_name }}
+  tags:
+    - java
+
+- name: Install Java Alternative
+  command: alternatives --install /usr/bin/java java /opt/{{ java_folder_name }}/bin/java 2
+  args:
+    chdir: /opt/jdk1.8.0_25
+  tags:
+    - java
+
+- name: Set Java Alternative
+  command: alternatives --set java /opt/{{ java_folder_name }}/bin/java
+  tags:
+    - java

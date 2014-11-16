@@ -1,0 +1,30 @@
+---
+- hosts: all
+  user: $user
+  sudo: yes
+
+  vars_files:
+    - vars/myvars.yml
+
+  tasks:
+    - name: install wget
+      yum: name=wget state=present
+
+    - name: install java
+      include: tasks/java-centos.yml
+      when: "'java' in group_names"
+
+    - name: install spring-xd
+      include: tasks/spring-xd.yml
+      when: "'xd' in group_names"
+
+    - include: tasks/zk.yml
+      when: "'zk' in group_names"
+      tags:
+        - zk
+
+    - include: tasks/redis.yml
+      when: "'redis' in group_names"
+
+    - include: tasks/hsqldb.yml
+      when: "'rdbms' in group_names"

@@ -1,0 +1,15 @@
+---
+- name: install wget
+  yum: name=wget state=present
+
+
+# Install Pivotal's GPG key for RPMs and their RPM repo
+- command: "rpm --import http://packages.gopivotal.com/pub/rpm/rhel6/app-suite/RPM-GPG-KEY-PIVOTAL-APP-SUITE-EL6"
+- command: "rpm -ivf  http://packages.gopivotal.com/pub/rpm/rhel6/app-suite/app-suite-repo-1.0-4.noarch.rpm"
+  ignore_errors: yes
+
+# Verify Pivotal's RPM repo is present so we can install Spring-XD
+- yum: name=app-suite-repo state=present
+
+- name: install spring-xd
+  yum: name=spring-xd state=present

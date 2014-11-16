@@ -1,0 +1,12 @@
+---
+
+- name: install hsqldb
+  yum: name=hsqldb state=present
+
+- name: hsqldb config change
+  lineinfile: dest=/etc/sysconfig/hsqldb line="JAVA_HOME=/opt/{{ java_folder_name }}" insertafter="^JAVA_HOME=\$.*\n"
+
+
+- name: start hsqldb
+  service: name=hsqldb state=restarted
+
