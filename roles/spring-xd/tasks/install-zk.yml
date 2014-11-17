@@ -10,3 +10,4 @@
   command: "./zkServer.sh restart"
   args:
     chdir: /opt/pivotal/spring-xd/zookeeper/bin/
+

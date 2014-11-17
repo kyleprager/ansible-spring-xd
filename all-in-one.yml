@@ -1,0 +1,38 @@
+---
+########################################################################
+# Run roles on all hosts using 'when' clauses to run on specific hosts #
+########################################################################
+
+- hosts: all
+  sudo: yes
+
+  roles:
+    - { # install java
+        role: java8-centos,
+        when: "'java' in group_names"
+      }
+    - { # install spring-xd - admins, containers, zk servers
+        role: spring-xd,
+        install_spring_xd: true,
+        when: "'xd' in group_names"
+      }
+    - { # install zk and start it via the spring-xd installed package
+        role: spring-xd,
+        install_zk: true,
+        when: "'zk' in group_names"
+      }
+    - {
+        role: redis,
+        when: "'redis' in group_names"
+      }
+    - {
+        role: hsqldb,
+        when: "'rdbms' in group_names"
+      }
+    - {
+        # start/restart spring-xd admins and containers
+        role: spring-xd,
+        restart_admins: true,
+        restart_containers: true,
+        when: "'xd' in group_names"
+      }

@@ -2,7 +2,6 @@
 - name: install wget
   yum: name=wget state=present
 
-
 # Install Pivotal's GPG key for RPMs and their RPM repo
 - command: "rpm --import http://packages.gopivotal.com/pub/rpm/rhel6/app-suite/RPM-GPG-KEY-PIVOTAL-APP-SUITE-EL6"
 - command: "rpm -ivf  http://packages.gopivotal.com/pub/rpm/rhel6/app-suite/app-suite-repo-1.0-4.noarch.rpm"
@@ -25,21 +24,7 @@
 
 # Template spring-xd servers.yml file
 - name: template spring-xd servers.yml
-  template: src=templates/servers.yml.j2 dest=/opt/pivotal/spring-xd/xd/config/servers.yml
+  template: src=servers.yml.j2 dest=/opt/pivotal/spring-xd/xd/config/servers.yml
   tags:
     - template
 
-# start spring-xd-admin by using the /etc/init.d/spring-xd-admin script directly because
-# doing "service spring-xd-admin" does not source HSQLDB_HOME properly and therefore won't
-# connect to hsqldb
-- name: start spring-xd admin
-  command: "/etc/init.d/spring-xd-admin restart"
-  when: "'xd_admins' in group_names"
-  tags:
-    - startspring
-
-- name: start spring-xd container
-  service: name=spring-xd-container state=restarted
-  when: "'xd_containers' in group_names"
-  tags:
-    - startspring

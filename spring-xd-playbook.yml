@@ -1,35 +1,55 @@
 ---
-- hosts: all
-  user: $user
+
+# install java
+- hosts: java
   sudo: yes
 
-  vars_files:
-    - vars/myvars.yml
+  roles:
+    - java8-centos
 
-  tasks:
-    - name: install wget
-      yum: name=wget state=present
+# install redis
+- hosts: redis
+  sudo: yes
 
-    - name: install java
-      include: tasks/java-centos.yml
-      when: "'java' in group_names"
+  roles:
+    - redis
 
-    - name: install spring-xd
-      include: tasks/spring-xd.yml
-      when: "'xd' in group_names"
+# install rdbms
+- hosts: rdbms
+  sudo: yes
 
-    - include: tasks/zk.yml
-      when: "'zk' in group_names"
-      tags:
-        - zk
+  roles:
+    - hsqldb
 
-    - include: tasks/redis.yml
-      when: "'redis' in group_names"
+# install zookeeper
+- hosts: zk
+  sudo: yes
 
-    - include: tasks/hsqldb.yml
-      when: "'rdbms' in group_names"
-      tags:
-        - rdbms
+  roles:
+    - {
+        role: spring-xd,
+        install_spring_xd: true,
+        install_zk: true,
+      }
 
-    - include: tasks/spring-xd.yml
-      when: "'xd' in group_names"
+# install and start spring-xd admins
+- hosts: xd_admins
+  sudo: yes
+
+  roles:
+    - {
+        role: spring-xd,
+        install_spring_xd: true,
+        restart_admins: true
+      }
+
+# install and start spring-xd containers
+- hosts: xd_containers
+  sudo: yes
+
+  roles:
+    - {
+        role: spring-xd,
+        install_spring_xd: true,
+        restart_containers: true
+      }

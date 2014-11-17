@@ -22,7 +22,7 @@
 - name: Install Java Alternative
   command: alternatives --install /usr/bin/java java /opt/{{ java_folder_name }}/bin/java 2
   args:
-    chdir: /opt/jdk1.8.0_25
+    chdir: /opt/{{ java_folder_name }}
   tags:
     - java
 

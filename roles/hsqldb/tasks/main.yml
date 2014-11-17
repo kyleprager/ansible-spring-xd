@@ -4,7 +4,7 @@
   yum: name=hsqldb state=present
 
 - name: hsqldb config change
-  lineinfile: dest=/etc/sysconfig/hsqldb line="JAVA_HOME=/opt/{{ java_folder_name }}" insertafter="^JAVA_HOME=\$.*\n"
+  lineinfile: dest=/etc/sysconfig/hsqldb line="JAVA_HOME={{ java_home }}" insertafter="^JAVA_HOME=\$.*\n"
 
 - name: hsqldb config change
   lineinfile: dest=/etc/sysconfig/hsqldb line="HSQLDB_JAR_PATH=/usr/share/java/hsqldb.jar" insertafter="^HSQLDB_JAR_PATH=\$.*\n"

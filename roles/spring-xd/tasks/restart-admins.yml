@@ -1,0 +1,5 @@
+# start spring-xd-admin by using the /etc/init.d/spring-xd-admin script directly because
+# doing "service spring-xd-admin" does not source HSQLDB_HOME properly and therefore won't
+# connect to hsqldb
+- name: start spring-xd admin
+  command: "/etc/init.d/spring-xd-admin restart"

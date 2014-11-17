@@ -1,0 +1,12 @@
+---
+- include: install-spring-xd.yml
+  when: install_spring_xd is defined
+
+- include: install-zk.yml
+  when: install_zk is defined
+
+- include: restart-admins.yml
+  when: restart_admins is defined
+
+- include: restart-containers.yml
+  when: restart_containers is defined
