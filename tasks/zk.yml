@@ -1,7 +1,7 @@
 ---
 
 - name: install zookeper from spring-xd installation
-  command: "install-zookeeper"
+  command: "./install-zookeeper"
   args:
     chdir: /opt/pivotal/spring-xd/zookeeper/bin/
     creates: zkServer.sh

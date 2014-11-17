@@ -11,5 +11,35 @@
 # Verify Pivotal's RPM repo is present so we can install Spring-XD
 - yum: name=app-suite-repo state=present
 
+# replace the lines that make you accept the EULA so it auto accepts
+- replace: dest=/etc/pivotal/pivotal-eula-acceptance.sh regexp="^(\s+less .*)"      replace='#\1'
+- replace: dest=/etc/pivotal/pivotal-eula-acceptance.sh regexp="^(\s+printf.*)"     replace='#\1'
+- replace: dest=/etc/pivotal/pivotal-eula-acceptance.sh regexp="^(\s+read reply.*)" replace='#\1'
+- lineinfile: dest=/etc/pivotal/pivotal-eula-acceptance.sh line="      reply=yes" insertafter=".*read reply.*"
+
+- name: run pivotal EULA to accept it automatically to get additional yum repos for spring-xd
+  command: /etc/pivotal/pivotal-eula-acceptance.sh
+
 - name: install spring-xd
   yum: name=spring-xd state=present
+
+# Template spring-xd servers.yml file
+- name: template spring-xd servers.yml
+  template: src=templates/servers.yml.j2 dest=/opt/pivotal/spring-xd/xd/config/servers.yml
+  tags:
+    - template
+
+# start spring-xd-admin by using the /etc/init.d/spring-xd-admin script directly because
+# doing "service spring-xd-admin" does not source HSQLDB_HOME properly and therefore won't
+# connect to hsqldb
+- name: start spring-xd admin
+  command: "/etc/init.d/spring-xd-admin restart"
+  when: "'xd_admins' in group_names"
+  tags:
+    - startspring
+
+- name: start spring-xd container
+  service: name=spring-xd-container state=restarted
+  when: "'xd_containers' in group_names"
+  tags:
+    - startspring

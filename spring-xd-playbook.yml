@@ -28,3 +28,8 @@
 
     - include: tasks/hsqldb.yml
       when: "'rdbms' in group_names"
+      tags:
+        - rdbms
+
+    - include: tasks/spring-xd.yml
+      when: "'xd' in group_names"
